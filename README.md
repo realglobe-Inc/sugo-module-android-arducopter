@@ -1,0 +1,1 @@
+# sugo-module-android-arducopter
