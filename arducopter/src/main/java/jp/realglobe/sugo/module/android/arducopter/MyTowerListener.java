@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.o3dr.android.client.ControlTower;
-import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.interfaces.TowerListener;
 
 import java.util.Collection;
@@ -21,11 +20,11 @@ final class MyTowerListener implements TowerListener {
     private static final String LOG_TAG = MyTowerListener.class.getName();
 
     private final ControlTower tower;
-    private final Drone drone;
+    private final DroneWrapper drone;
     private final Handler handler;
     private final MyDroneListener droneListener;
 
-    MyTowerListener(ControlTower tower, Drone drone, Handler handler, Emitter emitter) {
+    MyTowerListener(ControlTower tower, DroneWrapper drone, Handler handler, Emitter emitter) {
         this.tower = tower;
         this.drone = drone;
         this.handler = handler;
@@ -35,15 +34,15 @@ final class MyTowerListener implements TowerListener {
     @Override
     public void onTowerConnected() {
         Log.d(LOG_TAG, "Drone tower connected");
-        this.tower.registerDrone(this.drone, this.handler);
-        this.drone.registerDroneListener(this.droneListener);
+        this.tower.registerDrone(this.drone.getRaw(), this.handler);
+        this.drone.getRaw().registerDroneListener(this.droneListener);
     }
 
     @Override
     public void onTowerDisconnected() {
         Log.d(LOG_TAG, "Drone tower disconnected");
-        //this.tower.unregisterDrone(this.drone);
-        this.drone.unregisterDroneListener(this.droneListener);
+        //this.tower.unregisterDrone(this.drone.getRaw());
+        this.drone.getRaw().unregisterDroneListener(this.droneListener);
     }
 
     void enableEvents(Collection<Event> events) {

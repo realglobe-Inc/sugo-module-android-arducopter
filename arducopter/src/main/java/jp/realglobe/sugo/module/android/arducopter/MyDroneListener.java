@@ -3,7 +3,6 @@ package jp.realglobe.sugo.module.android.arducopter;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 
@@ -29,8 +28,8 @@ final class MyDroneListener implements DroneListener {
     private final Set<Event> enableEvents;
     private Object lastPosition;
 
-    MyDroneListener(Drone drone, Emitter emitter) {
-        this.drone = new DroneWrapper(drone);
+    MyDroneListener(DroneWrapper drone, Emitter emitter) {
+        this.drone = drone;
         this.emitter = emitter;
 
         this.enableEvents = EnumSet.noneOf(Event.class);
@@ -145,6 +144,12 @@ final class MyDroneListener implements DroneListener {
                 Log.d(LOG_TAG, "Drone mission command reached: " + data);
                 emit(Event.commandReached, data);
                 break;
+            }
+
+            case AttributeEvent.GIMBAL_ORIENTATION_UPDATED: {
+                final Object data = this.drone.getGimbalOrientation();
+                Log.d(LOG_TAG, "Drone gimbal orientation updated: " + data);
+                emit(Event.gimbalOrientation, data);
             }
 
             default: {
