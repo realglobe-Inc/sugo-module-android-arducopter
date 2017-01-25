@@ -11,6 +11,7 @@ import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.GimbalApi;
 import com.o3dr.android.client.apis.MissionApi;
 import com.o3dr.android.client.apis.VehicleApi;
+import com.o3dr.android.client.apis.solo.SoloCameraApi;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -58,6 +59,7 @@ public class ArduCopter extends Emitter implements Cloneable {
     private final VehicleApi vehicle;
     private final MissionApi mission;
     private final GimbalApi gimbal;
+    private final SoloCameraApi soloCamera;
     private final DroneWrapper info;
     private final MyTowerListener listener;
 
@@ -71,6 +73,7 @@ public class ArduCopter extends Emitter implements Cloneable {
         this.vehicle = VehicleApi.getApi(this.drone);
         this.mission = MissionApi.getApi(this.drone);
         this.gimbal = GimbalApi.getApi(this.drone);
+        this.soloCamera = SoloCameraApi.getApi(this.drone);
         this.info = new DroneWrapper(this.drone, this.gimbal);
 
         this.listener = new MyTowerListener(this.tower, this.info, handler, this);
@@ -511,6 +514,22 @@ public class ArduCopter extends Emitter implements Cloneable {
     @ModuleMethod
     public void setGimbalOrientation(double pitch, double roll, double yaw) {
         this.gimbal.updateGimbalOrientation((float) pitch, (float) roll, (float) yaw, gimbalOrientationListener);
+    }
+
+    /**
+     * 映像の記録を開始する
+     */
+    @ModuleMethod
+    public void startVideoRecording() {
+        this.soloCamera.startVideoRecording(null);
+    }
+
+    /**
+     * 映像の記録を止める
+     */
+    @ModuleMethod
+    public void stopVideoRecording() {
+        this.soloCamera.stopVideoRecording(null);
     }
 
 }
