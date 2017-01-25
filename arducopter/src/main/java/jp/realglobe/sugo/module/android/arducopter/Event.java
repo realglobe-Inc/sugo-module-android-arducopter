@@ -129,4 +129,15 @@ public enum Event {
      */
     commandReached,
 
+    /**
+     * ジンバルの向きの通知。
+     * <table border=1>
+     * <caption>添付データ</caption>
+     * <tr><th>pitch</th><th>上下を向く角度</th></tr>
+     * <tr><th>roll</th><th>頭を横に傾ける角度</th></tr>
+     * <tr><th>yaw</th><th>左右を向く角度</th></tr>
+     * </table>
+     */
+    gimbalOrientation,
+
 }

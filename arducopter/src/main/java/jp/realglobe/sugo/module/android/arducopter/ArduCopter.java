@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
+import com.o3dr.android.client.apis.GimbalApi;
 import com.o3dr.android.client.apis.MissionApi;
 import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.services.android.lib.coordinate.LatLong;
@@ -56,6 +57,7 @@ public class ArduCopter extends Emitter implements Cloneable {
     private final ControlApi control;
     private final VehicleApi vehicle;
     private final MissionApi mission;
+    private final GimbalApi gimbal;
     private final DroneWrapper info;
     private final MyTowerListener listener;
 
@@ -68,9 +70,10 @@ public class ArduCopter extends Emitter implements Cloneable {
         this.control = ControlApi.getApi(this.drone);
         this.vehicle = VehicleApi.getApi(this.drone);
         this.mission = MissionApi.getApi(this.drone);
-        this.info = new DroneWrapper(this.drone);
+        this.gimbal = GimbalApi.getApi(this.drone);
+        this.info = new DroneWrapper(this.drone, this.gimbal);
 
-        this.listener = new MyTowerListener(this.tower, this.drone, handler, this);
+        this.listener = new MyTowerListener(this.tower, this.info, handler, this);
         this.tower.connect(this.listener);
     }
 
@@ -458,6 +461,56 @@ public class ArduCopter extends Emitter implements Cloneable {
             events.add(event.name());
         }
         return events;
+    }
+
+    /**
+     * ジンバルの向きを返す
+     *
+     * @return ジンバルの向き。{@link Event#gimbalOrientation} を参照
+     */
+    @ModuleMethod
+    public Map<String, Object> getGimbalOrientation() {
+        return this.info.getGimbalOrientation();
+    }
+
+    private final GimbalApi.GimbalOrientationListener gimbalOrientationListener = new GimbalApi.GimbalOrientationListener() {
+        @Override
+        public void onGimbalOrientationUpdate(GimbalApi.GimbalOrientation orientation) {
+            Log.d(LOG_TAG, "Gimbal orientation is " + orientation);
+        }
+
+        @Override
+        public void onGimbalOrientationCommandError(int error) {
+            Log.e(LOG_TAG, "Gimbal orientation update failed: " + error);
+        }
+    };
+
+    /**
+     * ジンバルの制御を奪う
+     */
+    @ModuleMethod
+    public void startGimbalControl() {
+        this.gimbal.startGimbalControl(gimbalOrientationListener);
+    }
+
+    /**
+     * ジンバルの制御を返還する
+     */
+    @ModuleMethod
+    public void stopGimbalControl() {
+        this.gimbal.stopGimbalControl(gimbalOrientationListener);
+    }
+
+    /**
+     * ジンバルの向きを変える
+     *
+     * @param pitch 上下を向く角度
+     * @param roll  頭を横に傾ける角度
+     * @param yaw   左右を向く角度
+     */
+    @ModuleMethod
+    public void setGimbalOrientation(double pitch, double roll, double yaw) {
+        this.gimbal.updateGimbalOrientation((float) pitch, (float) roll, (float) yaw, gimbalOrientationListener);
     }
 
 }

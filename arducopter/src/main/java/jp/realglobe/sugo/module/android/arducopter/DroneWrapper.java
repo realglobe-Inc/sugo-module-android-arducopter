@@ -1,6 +1,7 @@
 package jp.realglobe.sugo.module.android.arducopter;
 
 import com.o3dr.android.client.Drone;
+import com.o3dr.android.client.apis.GimbalApi;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.mission.Mission;
@@ -47,9 +48,19 @@ final class DroneWrapper {
     private static final String KEY_INDEX = "index";
 
     private final Drone drone;
+    private final GimbalApi gimbal;
 
-    DroneWrapper(Drone drone) {
+    DroneWrapper(Drone drone, GimbalApi gimbal) {
         this.drone = drone;
+        this.gimbal = gimbal;
+    }
+
+    Drone getRaw() {
+        return this.drone;
+    }
+
+    GimbalApi getRawGimbal() {
+        return this.gimbal;
     }
 
     boolean isConnected() {
@@ -149,6 +160,15 @@ final class DroneWrapper {
         final Mission mission = this.drone.getAttribute(AttributeType.MISSION);
         final Map<String, Object> data = new HashMap<>();
         data.put(KEY_INDEX, mission.getCurrentMissionItem());
+        return data;
+    }
+
+    Map<String, Object> getGimbalOrientation() {
+        final GimbalApi.GimbalOrientation orientation = this.gimbal.getGimbalOrientation();
+        final Map<String, Object> data = new HashMap<>();
+        data.put(KEY_PITCH, orientation.getPitch());
+        data.put(KEY_ROLL, orientation.getRoll());
+        data.put(KEY_YAW, orientation.getYaw());
         return data;
     }
 
