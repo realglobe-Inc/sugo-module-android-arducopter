@@ -49,7 +49,10 @@ public class ArduCopter extends Emitter implements Cloneable {
     }
 
     public static final String CONNECT_TYPE_UDP = "UDP";
+    public static final String CONNECT_TYPE_TCP = "TCP";
     public static final String CONNECT_TYPE_USB = "USB";
+    public static final String CONNECT_TYPE_BLUETOOTH = "BLUETOOTH";
+    public static final String CONNECT_TYPE_SOLO = "SOLO";
 
 
     private final ControlTower tower;
@@ -115,7 +118,7 @@ public class ArduCopter extends Emitter implements Cloneable {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUdpConnection(null);
                 }
-                final UdpInfo udp = UdpInfo.parse(address);
+                final Address udp = Address.parse(address);
                 final int localPort = udp.getLocalPort() > 0 ? udp.getLocalPort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
                 if (udp.getRemoteHost() == null || udp.getRemoteHost().isEmpty()) {
                     return ConnectionParameter.newUdpConnection(localPort, null);
@@ -124,12 +127,31 @@ public class ArduCopter extends Emitter implements Cloneable {
                 final int remotePort = udp.getRemotePort() > 0 ? udp.getRemotePort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
                 return ConnectionParameter.newUdpWithPingConnection(localPort, remoteHost, remotePort, new byte[]{}, null);
             }
+            case CONNECT_TYPE_TCP: {
+                final Address tcp = Address.parse(address);
+                if (tcp.getRemoteHost() == null || tcp.getRemoteHost().isEmpty()) {
+                    throw new IllegalArgumentException("no remote host: " + address);
+                }
+                final String remoteHost = tcp.getRemoteHost();
+                final int remotePort = tcp.getRemotePort() > 0 ? tcp.getRemotePort() : ConnectionType.DEFAULT_TCP_SERVER_PORT;
+                return ConnectionParameter.newTcpConnection(remoteHost, remotePort, null);
+            }
             case CONNECT_TYPE_USB: {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUsbConnection(null);
                 }
                 final int baudRate = Integer.parseInt(address);
                 return ConnectionParameter.newUsbConnection(baudRate, null);
+            }
+            case CONNECT_TYPE_BLUETOOTH: {
+                return ConnectionParameter.newBluetoothConnection(address, null);
+            }
+            case CONNECT_TYPE_SOLO: {
+                final int sep = address.indexOf(":");
+                if (sep < 0) {
+                    return ConnectionParameter.newSoloConnection(address, null, null);
+                }
+                return ConnectionParameter.newSoloConnection(address.substring(0, sep), address.substring(sep + 1), null);
             }
             default: {
                 throw new IllegalArgumentException("unsupported connect type: " + type);
