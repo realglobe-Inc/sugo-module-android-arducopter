@@ -114,25 +114,22 @@ public class ArduCopter extends Emitter implements Cloneable {
             case CONNECT_TYPE_UDP: {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUdpConnection(null);
-                } else {
-                    final UdpInfo udp = UdpInfo.parse(address);
-                    final int localPort = udp.getLocalPort() > 0 ? udp.getLocalPort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
-                    if (udp.getRemoteHost() == null || udp.getRemoteHost().isEmpty()) {
-                        return ConnectionParameter.newUdpConnection(localPort, null);
-                    } else {
-                        final String remoteHost = udp.getRemoteHost();
-                        final int remotePort = udp.getRemotePort() > 0 ? udp.getRemotePort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
-                        return ConnectionParameter.newUdpWithPingConnection(localPort, remoteHost, remotePort, new byte[]{}, null);
-                    }
                 }
+                final UdpInfo udp = UdpInfo.parse(address);
+                final int localPort = udp.getLocalPort() > 0 ? udp.getLocalPort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
+                if (udp.getRemoteHost() == null || udp.getRemoteHost().isEmpty()) {
+                    return ConnectionParameter.newUdpConnection(localPort, null);
+                }
+                final String remoteHost = udp.getRemoteHost();
+                final int remotePort = udp.getRemotePort() > 0 ? udp.getRemotePort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
+                return ConnectionParameter.newUdpWithPingConnection(localPort, remoteHost, remotePort, new byte[]{}, null);
             }
             case CONNECT_TYPE_USB: {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUsbConnection(null);
-                } else {
-                    final int baudRate = Integer.parseInt(address);
-                    return ConnectionParameter.newUsbConnection(baudRate, null);
                 }
+                final int baudRate = Integer.parseInt(address);
+                return ConnectionParameter.newUsbConnection(baudRate, null);
             }
             default: {
                 throw new IllegalArgumentException("unsupported connect type: " + type);
