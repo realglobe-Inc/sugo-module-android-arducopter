@@ -52,19 +52,25 @@ final class Coordinates {
     }
 
     private static LatLongAlt decodeLatLongAlt(List<Object> latLongAlt) {
-        return new LatLongAlt(
-                Numbers.decodeDouble(latLongAlt.get(0)),
-                Numbers.decodeDouble(latLongAlt.get(1)),
-                Numbers.decodeDouble(latLongAlt.get(2))
-        );
+        if (latLongAlt.size() < 2) {
+            throw new IllegalArgumentException("no latitude and longitude");
+        } else if (latLongAlt.size() == 2) {
+            return new LatLongAlt(
+                    Numbers.decodeDouble(latLongAlt.get(0)),
+                    Numbers.decodeDouble(latLongAlt.get(1)),
+                    0
+            );
+        } else {
+            return new LatLongAlt(
+                    Numbers.decodeDouble(latLongAlt.get(0)),
+                    Numbers.decodeDouble(latLongAlt.get(1)),
+                    Numbers.decodeDouble(latLongAlt.get(2))
+            );
+        }
     }
 
     private static LatLongAlt decodeLatLongAlt(Object[] latLongAlt) {
-        return new LatLongAlt(
-                Numbers.decodeDouble(latLongAlt[0]),
-                Numbers.decodeDouble(latLongAlt[1]),
-                Numbers.decodeDouble(latLongAlt[2])
-        );
+        return decodeLatLongAlt(Arrays.asList(latLongAlt));
     }
 
 }
