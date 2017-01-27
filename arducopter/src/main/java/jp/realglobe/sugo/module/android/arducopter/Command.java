@@ -30,7 +30,7 @@ public enum Command {
      * 指定点を通れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 経度, 高度（m）]）。緯度と経度が 0 のときは高度だけ、高度が 0 のときは緯度、経度だけ現在地から変更した座標とみなす</th></tr>
      * <tr><th>delay</th><th>次の動作までの待機時間（s）</th></tr>
      * </table>
      */
@@ -61,7 +61,7 @@ public enum Command {
      * スプライン曲線の制御点として指定点を通れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 経度, 高度（m）]）。緯度と経度が 0 のときは高度だけ、高度が 0 のときは緯度、経度だけ現在地から変更した座標とみなす</th></tr>
      * <tr><th>delay</th><th>次の動作までの待機時間（s）</th></tr>
      * </table>
      */
@@ -170,7 +170,7 @@ public enum Command {
      * 着陸しろ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度]）</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 経度]）</th></tr>
      * </table>
      */
     land {
@@ -196,7 +196,7 @@ public enum Command {
      * 指定点を中心に回れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 経度, 高度（m）]）。緯度と経度が 0 のときは高度だけ、高度が 0 のときは緯度、経度だけ現在地から変更した座標とみなす</th></tr>
      * <tr><th>radius</th><th>半径（m）</th></tr>
      * <tr><th>turns</th><th>何回回るか（整数）</th></tr>
      * </table>
