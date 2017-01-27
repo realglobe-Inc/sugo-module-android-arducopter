@@ -30,8 +30,8 @@ public enum Command {
      * 指定点を通れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標</th></tr>
-     * <tr><th>delay</th><th>次の動作までの待機時間</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>delay</th><th>次の動作までの待機時間（s）</th></tr>
      * </table>
      */
     waypoint {
@@ -61,8 +61,8 @@ public enum Command {
      * スプライン曲線の制御点として指定点を通れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標</th></tr>
-     * <tr><th>delay</th><th>次の動作までの待機時間</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>delay</th><th>次の動作までの待機時間（s）</th></tr>
      * </table>
      */
     splineWaypoint {
@@ -92,7 +92,7 @@ public enum Command {
      * 離陸しろ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>altitude</th><th>離陸後の目標高さ</th></tr>
+     * <tr><th>altitude</th><th>離陸後の目標高度（m）</th></tr>
      * </table>
      */
     takeoff {
@@ -118,7 +118,7 @@ public enum Command {
      * 指定の速さに変えろ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>speed</th><th>目標の速さ</th></tr>
+     * <tr><th>speed</th><th>目標の速さ（m/s）</th></tr>
      * </table>
      */
     changeSpeed {
@@ -144,7 +144,7 @@ public enum Command {
      * 起点上空に戻れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>altitude</th><th>戻ったあとの高さ</th></tr>
+     * <tr><th>altitude</th><th>戻ったあとの高度（m）</th></tr>
      * </table>
      */
     returnToLaunch {
@@ -168,7 +168,10 @@ public enum Command {
 
     /**
      * 着陸しろ。
-     * 追加データ無し
+     * <table border=1>
+     * <caption>追加データ</caption>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度]）</th></tr>
+     * </table>
      */
     land {
         @Override
@@ -193,9 +196,9 @@ public enum Command {
      * 指定点を中心に回れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>coordinate</th><th>指定点の座標</th></tr>
-     * <tr><th>radius</th><th>半径</th></tr>
-     * <tr><th>turns</th><th>何回回るか</th></tr>
+     * <tr><th>coordinate</th><th>指定点の座標（[緯度, 軽度, 高度（m）]）。緯度と軽度が 0 のときは高度だけ、高度が 0 のときは緯度、軽度だけ現在地から変更した座標とみなす</th></tr>
+     * <tr><th>radius</th><th>半径（m）</th></tr>
+     * <tr><th>turns</th><th>何回回るか（整数）</th></tr>
      * </table>
      */
     circle {
@@ -229,9 +232,9 @@ public enum Command {
      * 向きを変えろ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>angle</th><th>角度</th></tr>
-     * <tr><th>angularSpeed</th><th>向きを変える速度</th></tr>
-     * <tr><th>relative</th><th>相対的な角度かどうか</th></tr>
+     * <tr><th>angle</th><th>角度（°）。relative が真なら、北が 0 で東が 90、以下同様。</th></tr>
+     * <tr><th>angularSpeed</th><th>向きを変える速度（°/s）</th></tr>
+     * <tr><th>relative</th><th>相対的な角度かどうか（真偽値）</th></tr>
      * </table>
      */
     turnTo {
@@ -265,8 +268,8 @@ public enum Command {
      * 指定のコマンドに移れ。
      * <table border=1>
      * <caption>追加データ</caption>
-     * <tr><th>repeatCount</th><th>繰り返し回数</th></tr>
-     * <tr><th>index</th><th>コマンド位置</th></tr>
+     * <tr><th>repeatCount</th><th>繰り返し回数（整数）</th></tr>
+     * <tr><th>index</th><th>コマンド位置（整数）</th></tr>
      * </table>
      */
     jumpTo {
