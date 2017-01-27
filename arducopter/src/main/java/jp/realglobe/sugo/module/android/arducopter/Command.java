@@ -1,5 +1,6 @@
 package jp.realglobe.sugo.module.android.arducopter;
 
+import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * ミッションの構成要素。
  * コマンド列がミッションになる。
- * コマンドは以下のデータとコマンドごとの追加データで表す。
+ * コマンドは以下のデータとコマンドごとの追加データ（任意）で表す。
  * <table border=1>
  * <caption>データ</caption>
  * <tr><th>type</th><th>コマンド名</th></tr>
@@ -48,10 +49,12 @@ public enum Command {
         Waypoint decode(Map<String, Object> command) {
             final Waypoint decoded = new Waypoint();
             if (command.containsKey(KEY_COORDINATE)) {
-                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.get(KEY_COORDINATE)));
+                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.remove(KEY_COORDINATE)));
+            } else {
+                decoded.setCoordinate(new LatLongAlt(0, 0, 0));
             }
             if (command.containsKey(KEY_DELAY)) {
-                decoded.setDelay(Numbers.decodeDouble(command.get(KEY_DELAY)));
+                decoded.setDelay(Numbers.decodeDouble(command.remove(KEY_DELAY)));
             }
             return decoded;
         }
@@ -79,10 +82,12 @@ public enum Command {
         SplineWaypoint decode(Map<String, Object> command) {
             final SplineWaypoint decoded = new SplineWaypoint();
             if (command.containsKey(KEY_COORDINATE)) {
-                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.get(KEY_COORDINATE)));
+                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.remove(KEY_COORDINATE)));
+            } else {
+                decoded.setCoordinate(new LatLongAlt(0, 0, 0));
             }
             if (command.containsKey(KEY_DELAY)) {
-                decoded.setDelay(Numbers.decodeDouble(command.get(KEY_DELAY)));
+                decoded.setDelay(Numbers.decodeDouble(command.remove(KEY_DELAY)));
             }
             return decoded;
         }
@@ -108,7 +113,7 @@ public enum Command {
         Takeoff decode(Map<String, Object> command) {
             final Takeoff decoded = new Takeoff();
             if (command.containsKey(KEY_ALTITUDE)) {
-                decoded.setTakeoffAltitude(Numbers.decodeDouble(command.get(KEY_ALTITUDE)));
+                decoded.setTakeoffAltitude(Numbers.decodeDouble(command.remove(KEY_ALTITUDE)));
             }
             return decoded;
         }
@@ -134,7 +139,7 @@ public enum Command {
         ChangeSpeed decode(Map<String, Object> command) {
             final ChangeSpeed decoded = new ChangeSpeed();
             if (command.containsKey(KEY_SPEED)) {
-                decoded.setSpeed(Numbers.decodeDouble(command.get(KEY_SPEED)));
+                decoded.setSpeed(Numbers.decodeDouble(command.remove(KEY_SPEED)));
             }
             return decoded;
         }
@@ -160,7 +165,7 @@ public enum Command {
         ReturnToLaunch decode(Map<String, Object> command) {
             final ReturnToLaunch decoded = new ReturnToLaunch();
             if (command.containsKey(KEY_ALTITUDE)) {
-                decoded.setReturnAltitude(Numbers.decodeDouble(command.get(KEY_ALTITUDE)));
+                decoded.setReturnAltitude(Numbers.decodeDouble(command.remove(KEY_ALTITUDE)));
             }
             return decoded;
         }
@@ -183,7 +188,9 @@ public enum Command {
         Land decode(Map<String, Object> command) {
             final Land decoded = new Land();
             if (command.containsKey(KEY_COORDINATE)) {
-                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.get(KEY_COORDINATE)));
+                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.remove(KEY_COORDINATE)));
+            } else {
+                decoded.setCoordinate(new LatLongAlt(0, 0, 0));
             }
             return decoded;
         }
@@ -213,13 +220,15 @@ public enum Command {
         Circle decode(Map<String, Object> command) {
             final Circle decoded = new Circle();
             if (command.containsKey(KEY_COORDINATE)) {
-                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.get(KEY_COORDINATE)));
+                decoded.setCoordinate(Coordinates.decodeLatLongAlt(command.remove(KEY_COORDINATE)));
+            } else {
+                decoded.setCoordinate(new LatLongAlt(0, 0, 0));
             }
             if (command.containsKey(KEY_RADIUS)) {
-                decoded.setRadius(Numbers.decodeDouble(command.get(KEY_RADIUS)));
+                decoded.setRadius(Numbers.decodeDouble(command.remove(KEY_RADIUS)));
             }
             if (command.containsKey(KEY_TURNS)) {
-                decoded.setTurns(Numbers.decodeInt(command.get(KEY_TURNS)));
+                decoded.setTurns(Numbers.decodeInt(command.remove(KEY_TURNS)));
             }
             return decoded;
         }
@@ -249,13 +258,13 @@ public enum Command {
         YawCondition decode(Map<String, Object> command) {
             final YawCondition decoded = new YawCondition();
             if (command.containsKey(KEY_ANGLE)) {
-                decoded.setAngle(Numbers.decodeDouble(command.get(KEY_ANGLE)));
+                decoded.setAngle(Numbers.decodeDouble(command.remove(KEY_ANGLE)));
             }
             if (command.containsKey(KEY_ANGULAR_SPEED)) {
-                decoded.setAngularSpeed(Numbers.decodeDouble(command.get(KEY_ANGULAR_SPEED)));
+                decoded.setAngularSpeed(Numbers.decodeDouble(command.remove(KEY_ANGULAR_SPEED)));
             }
             if (command.containsKey(KEY_RELATIVE)) {
-                decoded.setRelative((boolean) command.get(KEY_RELATIVE));
+                decoded.setRelative((boolean) command.remove(KEY_RELATIVE));
             }
             return decoded;
         }
@@ -283,10 +292,10 @@ public enum Command {
         DoJump decode(Map<String, Object> command) {
             final DoJump decoded = new DoJump();
             if (command.containsKey(KEY_REPEAT_COUNT)) {
-                decoded.setRepeatCount(Numbers.decodeInt(command.get(KEY_REPEAT_COUNT)));
+                decoded.setRepeatCount(Numbers.decodeInt(command.remove(KEY_REPEAT_COUNT)));
             }
             if (command.containsKey(KEY_INDEX)) {
-                decoded.setWaypoint(Numbers.decodeInt(command.get(KEY_INDEX)));
+                decoded.setWaypoint(Numbers.decodeInt(command.remove(KEY_INDEX)));
             }
             return decoded;
         }
@@ -306,6 +315,13 @@ public enum Command {
 
     abstract Map<String, Object> encode(MissionItem command);
 
+    /**
+     * JSON 互換形式から変換する
+     *
+     * @param command コマンドを表す JSON 互換データ。
+     *                使った分は削除される
+     * @return コマンド
+     */
     abstract MissionItem decode(Map<String, Object> command);
 
     private static final Map<Class<? extends MissionItem>, Command> classMap = new HashMap<>();
