@@ -65,7 +65,15 @@ final class Missions {
 
     private static MissionItem decodeCommand(Map<String, Object> command) {
         final Command type = Command.valueOf((String) command.get(KEY_TYPE));
-        return type.decode(command);
+        final Map<String, Object> copy = new HashMap<>(command);
+        copy.remove(KEY_TYPE);
+
+        final MissionItem decoded = type.decode(copy);
+
+        if (!copy.isEmpty()) {
+            throw new IllegalArgumentException("invalid parameters " + copy.keySet());
+        }
+        return decoded;
     }
 
 }
