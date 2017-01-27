@@ -239,7 +239,7 @@ public class ArduCopter extends Emitter implements Cloneable {
         final Type type = this.drone.getAttribute(AttributeType.TYPE);
         final String prefix = MODE_PREFIXES.get(type.getDroneType());
         if (prefix == null) {
-            throw new IllegalStateException("unsupported type");
+            throw new IllegalStateException("unsupported type: " + type.getDroneType());
         }
         this.vehicle.setVehicleMode(VehicleMode.valueOf(prefix + newMode.toUpperCase(Locale.US)));
     }
