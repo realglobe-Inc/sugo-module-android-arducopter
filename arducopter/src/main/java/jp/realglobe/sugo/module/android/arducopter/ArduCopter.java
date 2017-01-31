@@ -96,7 +96,15 @@ public class ArduCopter extends Emitter implements Cloneable {
 
     /**
      * ドローンにつなぐ。
-     * 引数は ("USB", "57600") や ("UDP", "192.168.1.3") など
+     * <table border=1>
+     * <caption>引数の例</caption>
+     * <tr><th>type</th><th>address</th><th>説明</th></tr>
+     * <tr><th>USB</th><th>null</th><th>USB 変換されたシリアルポートにデフォルトボーレートでつなぐ。デフォルトボーレートは 57600</th></tr>
+     * <tr><th>USB</th><th>230400</th><th>USB 変換されたシリアルポートにボーレート 230400 でつなぐ</th></tr>
+     * <tr><th>UDP</th><th>null</th><th>デフォルトポートで UDP 接続を待つ。デフォルトポートは 14550</th></tr>
+     * <tr><th>UDP/TCP</th><th>192.168.1.3</th><th>IP アドレス 192.168.1.3 に TCP/UDP のデフォルトポートでつなぐ。TCP のデフォルトポートは 5763</th></tr>
+     * <tr><th>UDP/TCP</th><th>192.168.1.3:12345</th><th>IP アドレス 192.168.1.3 に TCP/UDP のポート 12345 でつなぐ</th></tr>
+     * </table>
      *
      * @param type    接続タイプ
      * @param address 詳細
