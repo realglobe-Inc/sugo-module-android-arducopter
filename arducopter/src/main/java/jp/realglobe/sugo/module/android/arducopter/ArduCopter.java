@@ -49,7 +49,10 @@ public class ArduCopter extends Emitter implements Cloneable {
     }
 
     public static final String CONNECT_TYPE_UDP = "UDP";
+    public static final String CONNECT_TYPE_TCP = "TCP";
     public static final String CONNECT_TYPE_USB = "USB";
+    public static final String CONNECT_TYPE_BLUETOOTH = "BLUETOOTH";
+    public static final String CONNECT_TYPE_SOLO = "SOLO";
 
 
     private final ControlTower tower;
@@ -93,7 +96,15 @@ public class ArduCopter extends Emitter implements Cloneable {
 
     /**
      * ドローンにつなぐ。
-     * 引数は ("USB", "57600") や ("UDP", "192.168.1.3") など
+     * <table border=1>
+     * <caption>引数の例</caption>
+     * <tr><th>type</th><th>address</th><th>説明</th></tr>
+     * <tr><th>USB</th><th>null</th><th>USB 変換されたシリアルポートにデフォルトボーレートでつなぐ。デフォルトボーレートは 57600</th></tr>
+     * <tr><th>USB</th><th>230400</th><th>USB 変換されたシリアルポートにボーレート 230400 でつなぐ</th></tr>
+     * <tr><th>UDP</th><th>null</th><th>デフォルトポートで UDP 接続を待つ。デフォルトポートは 14550</th></tr>
+     * <tr><th>UDP/TCP</th><th>192.168.1.3</th><th>IP アドレス 192.168.1.3 に TCP/UDP のデフォルトポートでつなぐ。TCP のデフォルトポートは 5763</th></tr>
+     * <tr><th>UDP/TCP</th><th>192.168.1.3:12345</th><th>IP アドレス 192.168.1.3 に TCP/UDP のポート 12345 でつなぐ</th></tr>
+     * </table>
      *
      * @param type    接続タイプ
      * @param address 詳細
@@ -114,25 +125,41 @@ public class ArduCopter extends Emitter implements Cloneable {
             case CONNECT_TYPE_UDP: {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUdpConnection(null);
-                } else {
-                    final UdpInfo udp = UdpInfo.parse(address);
-                    final int localPort = udp.getLocalPort() > 0 ? udp.getLocalPort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
-                    if (udp.getRemoteHost() == null || udp.getRemoteHost().isEmpty()) {
-                        return ConnectionParameter.newUdpConnection(localPort, null);
-                    } else {
-                        final String remoteHost = udp.getRemoteHost();
-                        final int remotePort = udp.getRemotePort() > 0 ? udp.getRemotePort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
-                        return ConnectionParameter.newUdpWithPingConnection(localPort, remoteHost, remotePort, new byte[]{}, null);
-                    }
                 }
+                final Address udp = Address.parse(address);
+                final int localPort = udp.getLocalPort() > 0 ? udp.getLocalPort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
+                if (udp.getRemoteHost() == null || udp.getRemoteHost().isEmpty()) {
+                    return ConnectionParameter.newUdpConnection(localPort, null);
+                }
+                final String remoteHost = udp.getRemoteHost();
+                final int remotePort = udp.getRemotePort() > 0 ? udp.getRemotePort() : ConnectionType.DEFAULT_UDP_SERVER_PORT;
+                return ConnectionParameter.newUdpWithPingConnection(localPort, remoteHost, remotePort, new byte[]{}, null);
+            }
+            case CONNECT_TYPE_TCP: {
+                final Address tcp = Address.parse(address);
+                if (tcp.getRemoteHost() == null || tcp.getRemoteHost().isEmpty()) {
+                    throw new IllegalArgumentException("no remote host: " + address);
+                }
+                final String remoteHost = tcp.getRemoteHost();
+                final int remotePort = tcp.getRemotePort() > 0 ? tcp.getRemotePort() : ConnectionType.DEFAULT_TCP_SERVER_PORT;
+                return ConnectionParameter.newTcpConnection(remoteHost, remotePort, null);
             }
             case CONNECT_TYPE_USB: {
                 if (address == null || address.isEmpty()) {
                     return ConnectionParameter.newUsbConnection(null);
-                } else {
-                    final int baudRate = Integer.parseInt(address);
-                    return ConnectionParameter.newUsbConnection(baudRate, null);
                 }
+                final int baudRate = Integer.parseInt(address);
+                return ConnectionParameter.newUsbConnection(baudRate, null);
+            }
+            case CONNECT_TYPE_BLUETOOTH: {
+                return ConnectionParameter.newBluetoothConnection(address, null);
+            }
+            case CONNECT_TYPE_SOLO: {
+                final int sep = address.indexOf(":");
+                if (sep < 0) {
+                    return ConnectionParameter.newSoloConnection(address, null, null);
+                }
+                return ConnectionParameter.newSoloConnection(address.substring(0, sep), address.substring(sep + 1), null);
             }
             default: {
                 throw new IllegalArgumentException("unsupported connect type: " + type);
