@@ -329,6 +329,21 @@ public class ArduCopter extends Emitter implements Cloneable {
     }
 
     /**
+     * ミッションの実行を開始する。
+     * ミッションについては {@link Command} を参照
+     *
+     * @param delay           実行まで待つ時間（s）
+     * @param forceModeChange ミッションを実行できるモードに自動で移るか
+     * @param forceArm        自動で駆動を開始するか
+     * @throws InterruptedException 待ってる間に止められた
+     */
+    @ModuleMethod
+    public void startMissionWithDelay(double delay, boolean forceModeChange, boolean forceArm) throws InterruptedException {
+        Thread.sleep((long) (delay * 1_000));
+        this.mission.startMission(forceModeChange, forceArm, null);
+    }
+
+    /**
      * ミッションの実行を一時停止する。
      * ミッションについては {@link Command} を参照
      */
