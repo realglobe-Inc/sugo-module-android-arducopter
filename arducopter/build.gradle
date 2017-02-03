@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 def artifactGroupId = 'jp.realglobe'
 def artifactArtifactId = 'sugo-module-android-arducopter'
-def artifactVersion = '4.4.0'
+def artifactVersion = '4.5.0'
 
 android {
     compileSdkVersion 25
