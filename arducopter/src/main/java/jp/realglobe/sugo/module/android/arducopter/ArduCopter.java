@@ -344,6 +344,28 @@ public class ArduCopter extends Emitter implements Cloneable {
     }
 
     /**
+     * 駆動開始して AUTO モードにする。
+     *
+     * @param delay 駆動開始するまで待つ時間
+     */
+    @ModuleMethod
+    public void armAndSetAutoWithDelay(double delay) {
+        final Handler handler = this.drone.getHandler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                arm(true);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setMode("Auto");
+                    }
+                }, 3_000L);
+            }
+        }, (long) (delay * 1_000));
+    }
+
+    /**
      * ミッションの実行を一時停止する。
      * ミッションについては {@link Command} を参照
      */
