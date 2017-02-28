@@ -3,3 +3,8 @@
 Android デバイスで動く ArduCopter の SUGO モジュール。
 
 https://realglobe-inc.github.io/javadoc/jp/realglobe/sugo-module-android-arducopter/
+
+
+## License
+
+Apache License, Version 2.0
