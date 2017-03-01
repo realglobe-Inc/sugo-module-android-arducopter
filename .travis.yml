@@ -17,15 +17,17 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-before_install:
-  - envsubst < .travis-gradle.properties.template > gradle.properties
 script:
   - ./gradlew build test
 before_deploy:
-  - envsubst < .travis-deploy-gradle.properties.template > gradle.properties
+  - ./gradlew install
+  - curl -s https://raw.githubusercontent.com/realglobe-Inc/travis-deploy-scripts/master/gradle-prepare-files.sh | sh
+  - curl -s https://raw.githubusercontent.com/realglobe-Inc/travis-deploy-scripts/master/maven-generate-bintray-descriptor.sh | sh
 deploy:
-  provider: script
-  script: ./.travis-deploy.sh
-  skip_cleanup: true
-  on:
-    branch: master
+  provider: bintray
+  file: bintray.json
+  user: realglobe
+  key:
+    secure: evwm3uYNNYvSzGFVXV1NS4F03/206I4akVlQF1BpaXK5f2HdgHXZ8Ox5oB4pDQlUxqFJ/rTYsNyLX/kkZUvxByRaZ55Mcs5IJ0xyynNWTivm6uGh4Wf4sk/dZE98/FSPL+Cbi8VlzkMzlcKWfF+25ScBKJDwp7aE5orH0W6Ar7I8Fbo9F6EZeW2Dm/2I9tNpLCtLj3F5Ls3J2nTZO4x8nt55+OHi++IP/Cds3T3pKdgV8rV8qVlaLLgZQm6/vwQUQM88ITof/UM5DnA0EDLEUe2b1LeqGydkutzTcXCnhO837PYum/6IDyeQrIyv0hdLXcaE151Av6CkYJMkFXrJrMYXKXv+tBnPaDFF3UPrnAIC9qZlaC4/jhDLZg4Po56oUgXTMmtb0e6C0EmCgrjLXit/Oh837ZCOt0BVT8Ljj13+mVtbIj4cp9K1xpa3xnYefW5dCbwsots5bDNCQq/ZaMvOj/otMHyFm2NvFqkRttBi+3AmoFbABWnbHEIDuzAKm3+etL58rd5exhNy7nRoG32JjQFaPL+oBVOaWADoEB6E2BfWqWYltJnlPJQFzwATsh0AoTc1UEe/I6td8roURNNuLOUh69QlCV28LWRFTr6NsNIYshYOZBzMxpLzCp9LVK1tQqYCpJ9B2k70agovRygBFLqpUeZ7wGvKuJqVZyg=
+after_deploy:
+  - curl -s https://raw.githubusercontent.com/realglobe-Inc/travis-deploy-scripts/master/maven-deploy-javadoc.sh | sh
