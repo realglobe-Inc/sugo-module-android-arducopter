@@ -19,6 +19,8 @@ cache:
     - $HOME/.gradle/wrapper/
 script:
   - ./gradlew build test
+env:
+  - MODULE_DIR=arducopter
 before_deploy:
   - ./gradlew install
   - curl -s https://raw.githubusercontent.com/realglobe-Inc/travis-deploy-scripts/master/gradle-prepare-files.sh | sh
